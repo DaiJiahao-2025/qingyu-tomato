@@ -1,0 +1,88 @@
+{
+  "episodes": [
+    {
+      "episodeId": "suisui_ep_001",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 1,
+      "title": "第一次一起自习",
+      "startLine": "快坐下来，这个时候就不要玩手机了，快把它放到摸不到的位置，然后专注的学习吧",
+      "startVoice": "./public/audio/voice/suisui/start001.wav",
+      "endLine": "你真的完成了。那我也告诉你一个小秘密吧。",
+      "endVoice": "./public/audio/voice/suisui/end-001.mp3",
+      "unlockText": "她在窗边的位置给你留了一本书，书页里夹着一张写着「明天也来」的便签。",
+      "pendingChoiceTiming": "before_next_pomodoro",
+      "choices": [
+        {
+          "choiceId": "a",
+          "text": "什么秘密？",
+          "reply": "先休息一下，回来我再告诉你。"
+        },
+        {
+          "choiceId": "b",
+          "text": "我已经猜到了。",
+          "reply": "那你回来以后说给我听。"
+        }
+      ]
+    },
+    {
+      "episodeId": "suisui_ep_002",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 2,
+      "title": "便签的背面",
+      "startLine": "今天也只要先坐下来。剩下的，我们交给倒计时。",
+      "startVoice": "./public/audio/voice/suisui/start-002.mp3",
+      "endLine": "你比自己以为的更稳定一点。我一直看得到。",
+      "endVoice": "./public/audio/voice/suisui/end-002.mp3",
+      "unlockText": "便签背面有一行小字：如果你迟疑，就先写第一句。岁岁的字很小，却认真得像一枚书签。",
+      "choices": []
+    },
+    {
+      "episodeId": "suisui_ep_003",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 3,
+      "title": "雨声里的座位",
+      "startLine": "外面下雨了。我们把今天的声音调小一点，慢慢做完。",
+      "startVoice": "./public/audio/voice/suisui/start-003.mp3",
+      "endLine": "雨停之前，你已经完成了该完成的部分。",
+      "endVoice": "./public/audio/voice/suisui/end-003.mp3",
+      "unlockText": "岁岁把靠窗的灯打开，桌面浮起一层柔和的光。她说，认真学习的人也应该被温柔对待。",
+      "pendingChoiceTiming": "before_next_pomodoro",
+      "choices": [
+        {
+          "choiceId": "a",
+          "text": "下次还坐这里。",
+          "reply": "那我会早点来，占住这个位置。"
+        },
+        {
+          "choiceId": "b",
+          "text": "谢谢你陪我。",
+          "reply": "不用谢，我也在等你开始。"
+        }
+      ]
+    },
+    {
+      "episodeId": "suisui_ep_004",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 4,
+      "title": "她的复习计划",
+      "startLine": "不要急着变厉害。先完成这一轮，就已经很好。",
+      "startVoice": "./public/audio/voice/suisui/start-004.mp3",
+      "endLine": "你完成任务的时候，我也把今天最难的一页看完了。",
+      "endVoice": "./public/audio/voice/suisui/end-004.mp3",
+      "unlockText": "她把自己的复习计划推过来，最后一栏写着：和你一起坚持到第五次番茄。",
+      "choices": []
+    },
+    {
+      "episodeId": "suisui_ep_005",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 5,
+      "title": "第五次约定",
+      "startLine": "第五次了。今天结束后，我们给这段努力做一个小小的标记。",
+      "startVoice": "./public/audio/voice/suisui/start-005.mp3",
+      "endLine": "你看，你真的可以完成。下次开始困难的时候，就想起今天。",
+      "endVoice": "./public/audio/voice/suisui/end-005.mp3",
+      "unlockText": "岁岁在你的笔记本封面贴上一枚番茄形状的贴纸。她笑着说：这是第一枚，不是最后一枚。",
+      "choices": []
+    }
+  ]
+}

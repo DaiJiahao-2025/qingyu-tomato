@@ -1,0 +1,339 @@
+:root {
+  color-scheme: light;
+
+  /* Brand colors: warm, soft, companion-like, never tech-blue. */
+  --color-background: #fff9f3;
+  --color-background-soft: #fff1ec;
+  --color-background-deep: #fbeee6;
+  --color-surface: rgba(255, 253, 250, 0.86);
+  --color-surface-solid: #fffdfa;
+  --color-surface-muted: rgba(255, 255, 255, 0.58);
+  --color-foreground: #4a3b36;
+  --color-foreground-strong: #3f2f2a;
+  --color-text-muted: #7b625a;
+  --color-text-subtle: #a58a81;
+  --color-primary: #ee8d82;
+  --color-primary-hover: #df7f74;
+  --color-primary-strong: #c96f66;
+  --color-primary-soft: rgba(238, 141, 130, 0.12);
+  --color-primary-border: rgba(238, 141, 130, 0.28);
+  --color-secondary: #f7c5a2;
+  --color-success: #8fae91;
+  --color-success-soft: rgba(143, 174, 145, 0.14);
+  --color-story: #bc8f7f;
+  --color-border: rgba(157, 114, 100, 0.18);
+  --color-border-strong: rgba(157, 114, 100, 0.28);
+  --color-ring: rgba(238, 141, 130, 0.18);
+  --color-scrim: rgba(88, 61, 54, 0.24);
+  --color-on-primary: #fffdfa;
+
+  /* Existing app aliases. Keep these aligned while the app migrates to semantic names. */
+  --paper: var(--color-background);
+  --paper-deep: var(--color-background-deep);
+  --paper-soft: var(--color-background-soft);
+  --ink: var(--color-foreground);
+  --muted: var(--color-text-subtle);
+  --tomato: var(--color-primary);
+  --tomato-dark: var(--color-primary-strong);
+  --apricot: var(--color-secondary);
+  --sage: var(--color-success);
+  --tea: var(--color-story);
+  --line: var(--color-border);
+  --line-strong: var(--color-border-strong);
+
+  /* Radius scale. */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 30px;
+  --radius-pill: 999px;
+  --radius: var(--radius-lg);
+
+  /* Warm shadows only; avoid heavy black dashboard shadows. */
+  --shadow-soft: 0 10px 28px rgba(141, 91, 75, 0.08);
+  --shadow-card: 0 18px 44px rgba(141, 91, 75, 0.1);
+  --shadow-float: 0 24px 60px rgba(70, 42, 35, 0.16);
+  --shadow-cta: 0 18px 38px rgba(238, 141, 130, 0.24);
+  --shadow: var(--shadow-card);
+
+  /* Typography. */
+  --font-display: "Gowun Batang", "Noto Serif SC", serif;
+  --font-body: "LXGW WenKai TC", "Noto Sans SC", sans-serif;
+  --display: var(--font-display);
+  --body: var(--font-body);
+  --font-size-caption: 12px;
+  --font-size-label: 13px;
+  --font-size-body: 16px;
+  --font-size-body-sm: 15px;
+  --font-size-title: clamp(20px, 2.2vw, 24px);
+  --font-size-section: clamp(26px, 3.2vw, 34px);
+  --font-size-page: clamp(40px, 5vw, 60px);
+  --font-size-timer: clamp(56px, 10vw, 96px);
+  --line-height-tight: 1.1;
+  --line-height-copy: 1.75;
+  --line-height-story: 1.9;
+
+  /* Layout rhythm. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --content-max-width: 1180px;
+
+  /* Motion. */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 280ms;
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ds-page-title,
+.ds-section-title,
+.ds-card-title,
+.ds-timer-text {
+  font-family: var(--font-display);
+  color: var(--color-foreground-strong);
+  letter-spacing: 0;
+}
+
+.ds-page-title {
+  margin: 0;
+  font-size: var(--font-size-page);
+  line-height: var(--line-height-tight);
+}
+
+.ds-section-title {
+  margin: 0;
+  font-size: var(--font-size-section);
+  line-height: 1.18;
+}
+
+.ds-card-title {
+  margin: 0;
+  font-size: var(--font-size-title);
+  line-height: 1.25;
+}
+
+.ds-timer-text {
+  font-size: var(--font-size-timer);
+  line-height: 1;
+}
+
+.ds-body-text {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-copy);
+}
+
+.ds-label,
+.ds-caption,
+.ds-eyebrow {
+  color: var(--color-text-subtle);
+  font-family: var(--font-body);
+  letter-spacing: 0;
+}
+
+.ds-label,
+.ds-eyebrow {
+  font-size: var(--font-size-label);
+  line-height: 1.4;
+}
+
+.ds-caption {
+  font-size: var(--font-size-caption);
+  line-height: 1.5;
+}
+
+.ds-card,
+.ds-dialog,
+.ds-panel {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.ds-card,
+.ds-panel {
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+
+.ds-dialog {
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-float);
+}
+
+.ds-card--quiet {
+  background: rgba(255, 255, 255, 0.56);
+  box-shadow: var(--shadow-soft);
+}
+
+.ds-card--dashed {
+  border-style: dashed;
+  border-color: var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: none;
+}
+
+.ds-button,
+.ds-button-primary,
+.ds-button-secondary,
+.ds-button-danger {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease-soft),
+    box-shadow var(--duration-fast) var(--ease-soft),
+    background-color var(--duration-fast) var(--ease-soft),
+    border-color var(--duration-fast) var(--ease-soft);
+}
+
+.ds-button-primary {
+  color: var(--color-on-primary);
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.48), transparent 34%),
+    linear-gradient(145deg, #f7aaa0, var(--color-primary));
+  box-shadow: var(--shadow-cta);
+}
+
+.ds-button-secondary {
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: var(--shadow-soft);
+}
+
+.ds-button-danger {
+  color: var(--color-primary-strong);
+  border-color: rgba(201, 111, 102, 0.24);
+  background: var(--color-primary-soft);
+}
+
+.ds-button:hover,
+.ds-button-primary:hover,
+.ds-button-secondary:hover,
+.ds-button-danger:hover {
+  transform: translateY(-1px);
+}
+
+.ds-button-primary:hover {
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.52), transparent 34%),
+    linear-gradient(145deg, #f9b0a8, var(--color-primary-hover));
+}
+
+.ds-button:disabled,
+.ds-button-primary:disabled,
+.ds-button-secondary:disabled,
+.ds-button-danger:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  transform: none;
+  box-shadow: none;
+}
+
+.ds-input,
+.ds-select,
+.ds-textarea {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-foreground);
+  background: rgba(255, 255, 255, 0.76);
+  font: inherit;
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66);
+  transition:
+    border-color var(--duration-fast) var(--ease-soft),
+    box-shadow var(--duration-fast) var(--ease-soft),
+    background-color var(--duration-fast) var(--ease-soft);
+}
+
+.ds-input,
+.ds-select {
+  padding: 0 var(--space-4);
+}
+
+.ds-textarea {
+  min-height: 108px;
+  padding: 12px var(--space-4);
+  line-height: var(--line-height-copy);
+  resize: vertical;
+}
+
+.ds-input::placeholder,
+.ds-textarea::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.ds-input:focus,
+.ds-select:focus,
+.ds-textarea:focus {
+  border-color: rgba(238, 141, 130, 0.55);
+  box-shadow: 0 0 0 4px var(--color-ring);
+}
+
+.ds-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ds-field > label,
+.ds-field-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+
+.ds-surface-blur {
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 250, 246, 0.58);
+  box-shadow: var(--shadow-float);
+  backdrop-filter: blur(14px);
+}
+
+@media (max-width: 620px) {
+  :root {
+    --font-size-page: clamp(34px, 10vw, 48px);
+    --font-size-timer: clamp(52px, 17vw, 76px);
+  }
+
+  .ds-card,
+  .ds-panel,
+  .ds-dialog {
+    padding: var(--space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-button,
+  .ds-button-primary,
+  .ds-button-secondary,
+  .ds-button-danger,
+  .ds-input,
+  .ds-select,
+  .ds-textarea {
+    transition-duration: 0.01ms !important;
+  }
+}
