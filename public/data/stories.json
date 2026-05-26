@@ -1,88 +1,422 @@
 {
+  "version": "1.0.0",
+  "storyId": "suisui_main_season_01",
+  "storyName": "番茄轻语：岁岁篇",
+  "characters": [
+    {
+      "characterId": "suisui_001",
+      "name": "岁岁",
+      "description": "温柔、可爱、聪明、声音好听，像陪你一起自习的隔壁桌同学。"
+    },
+    {
+      "characterId": "yaya_001",
+      "name": "娅娅",
+      "description": "新加入的角色，剧情和语音仍在准备中。"
+    }
+  ],
+  "assets": {
+    "backgrounds": [
+      {
+        "backgroundId": "bg_study_room_day",
+        "name": "白天自习室",
+        "src": "/images/backgrounds/study-room-day.webp"
+      },
+      {
+        "backgroundId": "bg_study_room_evening",
+        "name": "傍晚自习室",
+        "src": "/images/backgrounds/study-room-evening.webp"
+      },
+      {
+        "backgroundId": "bg_study_room_rain",
+        "name": "雨天自习室",
+        "src": "/images/backgrounds/study-room-rain.webp"
+      },
+      {
+        "backgroundId": "bg_corridor",
+        "name": "教学楼走廊",
+        "src": "/images/backgrounds/corridor.webp"
+      },
+      {
+        "backgroundId": "bg_gate_rain",
+        "name": "雨天校门口",
+        "src": "/images/backgrounds/gate-rain.webp"
+      },
+      {
+        "backgroundId": "bg_empty_study_room",
+        "name": "空荡自习室",
+        "src": "/images/backgrounds/empty-study-room.webp"
+      }
+    ],
+    "sprites": [
+      {
+        "spriteId": "suisui_normal",
+        "characterId": "suisui_001",
+        "name": "岁岁普通",
+        "src": "/images/characters/suisui/normal.webp"
+      },
+      {
+        "spriteId": "suisui_smile",
+        "characterId": "suisui_001",
+        "name": "岁岁微笑",
+        "src": "/images/characters/suisui/smile.webp"
+      },
+      {
+        "spriteId": "suisui_shy",
+        "characterId": "suisui_001",
+        "name": "岁岁害羞",
+        "src": "/images/characters/suisui/shy.webp"
+      },
+      {
+        "spriteId": "suisui_serious",
+        "characterId": "suisui_001",
+        "name": "岁岁认真",
+        "src": "/images/characters/suisui/serious.webp"
+      },
+      {
+        "spriteId": "suisui_tease",
+        "characterId": "suisui_001",
+        "name": "岁岁调侃",
+        "src": "/images/characters/suisui/tease.webp"
+      },
+      {
+        "spriteId": "suisui_quiet",
+        "characterId": "suisui_001",
+        "name": "岁岁安静",
+        "src": "/images/characters/suisui/quiet.webp"
+      },
+      {
+        "spriteId": "suisui_worried",
+        "characterId": "suisui_001",
+        "name": "岁岁担心",
+        "src": "/images/characters/suisui/worried.webp"
+      },
+      {
+        "spriteId": "yaya_normal",
+        "characterId": "yaya_001",
+        "name": "娅娅",
+        "src": "/images/characters/yaya/娅娅.webp"
+      }
+    ],
+    "bgm": [
+      {
+        "bgmId": "bgm_rain",
+        "name": "雨天",
+        "src": "/audio/bgm/rain.mp3"
+      },
+      {
+        "bgmId": "bgm_cafe",
+        "name": "咖啡馆",
+        "src": "/audio/bgm/cafe.mp3"
+      },
+      {
+        "bgmId": "bgm_campfire",
+        "name": "篝火",
+        "src": "/audio/bgm/campfire.mp3"
+      }
+    ],
+    "voices": [
+      {
+        "voiceId": "voice_ep001_start",
+        "src": "/audio/voice/suisui/start-001.wav"
+      },
+      {
+        "voiceId": "voice_ep001_end",
+        "src": "/audio/voice/suisui/end-001.wav"
+      },
+      {
+        "voiceId": "voice_ep002_start",
+        "src": "/audio/voice/suisui/start-002.wav"
+      },
+      {
+        "voiceId": "voice_ep002_end",
+        "src": "/audio/voice/suisui/end-002.wav"
+      },
+      {
+        "voiceId": "voice_ep003_start",
+        "src": "/audio/voice/suisui/start-003.wav"
+      },
+      {
+        "voiceId": "voice_ep003_end",
+        "src": "/audio/voice/suisui/end-003.wav"
+      },
+      {
+        "voiceId": "voice_ep004_start",
+        "src": "/audio/voice/suisui/start-004.wav"
+      },
+      {
+        "voiceId": "voice_ep004_end",
+        "src": "/audio/voice/suisui/end-004.wav"
+      },
+      {
+        "voiceId": "voice_ep005_start",
+        "src": "/audio/voice/suisui/start-005.wav"
+      },
+      {
+        "voiceId": "voice_ep005_end",
+        "src": "/audio/voice/suisui/end-005.wav"
+      },
+      {
+        "voiceId": "voice_ep006_start",
+        "src": "/audio/voice/suisui/start-006.wav"
+      },
+      {
+        "voiceId": "voice_ep006_end",
+        "src": "/audio/voice/suisui/end-006.wav"
+      },
+      {
+        "voiceId": "voice_ep007_start",
+        "src": "/audio/voice/suisui/start-007.wav"
+      },
+      {
+        "voiceId": "voice_ep007_end",
+        "src": "/audio/voice/suisui/end-007.wav"
+      },
+      {
+        "voiceId": "voice_ep008_start",
+        "src": "/audio/voice/suisui/start-008.wav"
+      },
+      {
+        "voiceId": "voice_ep008_end",
+        "src": "/audio/voice/suisui/end-008.wav"
+      },
+      {
+        "voiceId": "voice_ep009_start",
+        "src": "/audio/voice/suisui/start-009.wav"
+      },
+      {
+        "voiceId": "voice_ep009_end",
+        "src": "/audio/voice/suisui/end-009.wav"
+      },
+      {
+        "voiceId": "voice_ep010_start",
+        "src": "/audio/voice/suisui/start-010.wav"
+      },
+      {
+        "voiceId": "voice_ep010_end",
+        "src": "/audio/voice/suisui/end-010.wav"
+      }
+    ]
+  },
   "episodes": [
     {
       "episodeId": "suisui_ep_001",
       "characterId": "suisui_001",
       "requiredPomodoros": 1,
       "title": "第一次一起自习",
-      "startLine": "快坐下来，这个时候就不要玩手机了，快把它放到摸不到的位置，然后专注的学习吧",
-      "startVoice": "./public/audio/voice/suisui/start001.wav",
-      "endLine": "你真的完成了。那我也告诉你一个小秘密吧。",
-      "endVoice": "./public/audio/voice/suisui/end-001.mp3",
-      "unlockText": "她在窗边的位置给你留了一本书，书页里夹着一张写着「明天也来」的便签。",
-      "pendingChoiceTiming": "before_next_pomodoro",
-      "choices": [
-        {
-          "choiceId": "a",
-          "text": "什么秘密？",
-          "reply": "先休息一下，回来我再告诉你。"
-        },
-        {
-          "choiceId": "b",
-          "text": "我已经猜到了。",
-          "reply": "那你回来以后说给我听。"
-        }
-      ]
+      "visual": {
+        "startBackgroundId": "bg_study_room_day",
+        "startSpriteId": "suisui_serious",
+        "endBackgroundId": "bg_corridor",
+        "endSpriteId": "suisui_smile",
+        "unlockBackgroundId": "bg_study_room_day",
+        "unlockSpriteId": "suisui_normal"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep001_start",
+        "endVoiceId": "voice_ep001_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "快坐下来，这个时候就不要玩手机了，快把它放到摸不到的位置，然后专注地学习吧。",
+      "endLine": "总算到休息时间了，去楼道里放松一下吧。^_^",
+      "unlockText": "你站起来的时候，发现桌角压着一张小纸条。上面写着：“今天先完成一轮就好。”字很小，旁边画了一个很轻的对勾。虽然中间还隔着一个空座位，但这位新同桌的监督，似乎让你少了几分平时的浮躁。"
     },
     {
       "episodeId": "suisui_ep_002",
       "characterId": "suisui_001",
       "requiredPomodoros": 2,
-      "title": "便签的背面",
-      "startLine": "今天也只要先坐下来。剩下的，我们交给倒计时。",
-      "startVoice": "./public/audio/voice/suisui/start-002.mp3",
-      "endLine": "你比自己以为的更稳定一点。我一直看得到。",
-      "endVoice": "./public/audio/voice/suisui/end-002.mp3",
-      "unlockText": "便签背面有一行小字：如果你迟疑，就先写第一句。岁岁的字很小，却认真得像一枚书签。",
-      "choices": []
+      "title": "名字",
+      "visual": {
+        "startBackgroundId": "bg_study_room_day",
+        "startSpriteId": "suisui_normal",
+        "endBackgroundId": "bg_study_room_day",
+        "endSpriteId": "suisui_tease",
+        "unlockBackgroundId": "bg_study_room_day",
+        "unlockSpriteId": "suisui_smile"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep002_start",
+        "endVoiceId": "voice_ep002_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "我刚刚发现，我还不知道该怎么叫你。那我先叫你隔壁桌同学吧。可以吗？",
+      "endLine": "隔壁桌同学，我感觉这个称呼好像还挺顺口的。",
+      "unlockText": "今天的纸条上写着：“隔壁桌同学，今日完成 1 次。”你看过去的时候，她把书竖起来挡住脸，假装正在认真看书，只是露出来的耳朵尖红红的。你忽然觉得，“隔壁桌同学”这个听起来有点土气的称呼，好像也挺不赖的。"
     },
     {
       "episodeId": "suisui_ep_003",
       "characterId": "suisui_001",
       "requiredPomodoros": 3,
-      "title": "雨声里的座位",
-      "startLine": "外面下雨了。我们把今天的声音调小一点，慢慢做完。",
-      "startVoice": "./public/audio/voice/suisui/start-003.mp3",
-      "endLine": "雨停之前，你已经完成了该完成的部分。",
-      "endVoice": "./public/audio/voice/suisui/end-003.mp3",
-      "unlockText": "岁岁把靠窗的灯打开，桌面浮起一层柔和的光。她说，认真学习的人也应该被温柔对待。",
-      "pendingChoiceTiming": "before_next_pomodoro",
-      "choices": [
-        {
-          "choiceId": "a",
-          "text": "下次还坐这里。",
-          "reply": "那我会早点来，占住这个位置。"
-        },
-        {
-          "choiceId": "b",
-          "text": "谢谢你陪我。",
-          "reply": "不用谢，我也在等你开始。"
-        }
-      ]
+      "title": "第一步",
+      "visual": {
+        "startBackgroundId": "bg_study_room_day",
+        "startSpriteId": "suisui_quiet",
+        "endBackgroundId": "bg_study_room_day",
+        "endSpriteId": "suisui_smile",
+        "unlockBackgroundId": "bg_study_room_day",
+        "unlockSpriteId": "suisui_normal"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep003_start",
+        "endVoiceId": "voice_ep003_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天先别急着开始。把要做的事写短一点就好。只写一件，也可以。",
+      "endLine": "你看，写下来以后，好像就没有那么难了。",
+      "unlockText": "你发现她在纸条背面多写了一行字：“开始的时候，可以只写第一步。”你笑了笑，在下面补了一行：“那我的第一步：可以加个微信吗？[附你的微信号]”偷偷递回去后，她把笔帽扣得乱七八糟，慌乱地把纸条塞进了文具袋。"
     },
     {
       "episodeId": "suisui_ep_004",
       "characterId": "suisui_001",
       "requiredPomodoros": 4,
-      "title": "她的复习计划",
-      "startLine": "不要急着变厉害。先完成这一轮，就已经很好。",
-      "startVoice": "./public/audio/voice/suisui/start-004.mp3",
-      "endLine": "你完成任务的时候，我也把今天最难的一页看完了。",
-      "endVoice": "./public/audio/voice/suisui/end-004.mp3",
-      "unlockText": "她把自己的复习计划推过来，最后一栏写着：和你一起坚持到第五次番茄。",
-      "choices": []
+      "title": "她不在的那天",
+      "visual": {
+        "startBackgroundId": "bg_empty_study_room",
+        "startSpriteId": "suisui_quiet",
+        "endBackgroundId": "bg_empty_study_room",
+        "endSpriteId": "suisui_smile",
+        "unlockBackgroundId": "bg_empty_study_room",
+        "unlockSpriteId": "suisui_quiet"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep004_start",
+        "endVoiceId": "voice_ep004_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天有事来不了。你自己也要好好学。便签背面有今天的任务量，我帮你算好了。——岁岁。",
+      "endLine": "完成了吗？我就知道你可以。",
+      "unlockText": "你第一次发现，没有她翻书和写字的声音，自习室安静得有点过分了。你回复她：“今天有点不习惯。”屏幕那头显示“对方正在输入”很久，最后变成一句：“我也是。明天我会早点到。”"
     },
     {
       "episodeId": "suisui_ep_005",
       "characterId": "suisui_001",
       "requiredPomodoros": 5,
-      "title": "第五次约定",
-      "startLine": "第五次了。今天结束后，我们给这段努力做一个小小的标记。",
-      "startVoice": "./public/audio/voice/suisui/start-005.mp3",
-      "endLine": "你看，你真的可以完成。下次开始困难的时候，就想起今天。",
-      "endVoice": "./public/audio/voice/suisui/end-005.mp3",
-      "unlockText": "岁岁在你的笔记本封面贴上一枚番茄形状的贴纸。她笑着说：这是第一枚，不是最后一枚。",
-      "choices": []
+      "title": "下雨天",
+      "visual": {
+        "startBackgroundId": "bg_study_room_rain",
+        "startSpriteId": "suisui_normal",
+        "endBackgroundId": "bg_gate_rain",
+        "endSpriteId": "suisui_smile",
+        "unlockBackgroundId": "bg_gate_rain",
+        "unlockSpriteId": "suisui_shy"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep005_start",
+        "endVoiceId": "voice_ep005_end",
+        "bgmId": "bgm_rain"
+      },
+      "startLine": "今天下雨了，你没带伞吧？我猜的。没关系，学完再说，雨可能就停了。",
+      "endLine": "雨没停。……喏，我带了伞。我们要不要……撑一把走？",
+      "unlockText": "雨水砸在校门口的积水里，激起一片细密的水花。她撑开一把不算宽敞的透明伞，在伞下有些局促地朝你挪近了一步。刚刚走入雨幕，一阵冷风吹过来，伞面晃了晃。她紧了紧握着伞柄的手，微微侧过头，看着你们之间刻意保持的那点距离，有些无奈地抿着嘴笑了笑：“隔壁桌同学，你站得那么远，是打算在伞外面给我当‘挡雨墙’吗？……再不过来点，我这边可就要淋湿了哦。”说完，她故意把伞往自己那边收了收，亮晶晶的眼睛狡黠地看着你。你失笑，终于迈出脚步，和她并肩靠在了伞下。"
+    },
+    {
+      "episodeId": "suisui_ep_006",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 6,
+      "title": "晚走五分钟",
+      "visual": {
+        "startBackgroundId": "bg_study_room_evening",
+        "startSpriteId": "suisui_serious",
+        "endBackgroundId": "bg_corridor",
+        "endSpriteId": "suisui_shy",
+        "unlockBackgroundId": "bg_corridor",
+        "unlockSpriteId": "suisui_quiet"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep006_start",
+        "endVoiceId": "voice_ep006_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天的量真的有点多，但有你陪着，总觉得动力满满。",
+      "endLine": "走吧。其实我想说……你可以晚走五分钟吗？",
+      "unlockText": "自习室的人都走了。她站在门口背着光，书包带子在手指上绕了两圈，声音很小地补充：“走廊的灯坏了，有点黑……我想和你一起下楼。”你没有拆穿她的小心思，放慢了脚步，陪她走在只有两个人脚步声的微暗长廊里。"
+    },
+    {
+      "episodeId": "suisui_ep_007",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 7,
+      "title": "耳机分你一只",
+      "visual": {
+        "startBackgroundId": "bg_study_room_day",
+        "startSpriteId": "suisui_normal",
+        "endBackgroundId": "bg_study_room_day",
+        "endSpriteId": "suisui_tease",
+        "unlockBackgroundId": "bg_study_room_day",
+        "unlockSpriteId": "suisui_shy"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep007_start",
+        "endVoiceId": "voice_ep007_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天外面在施工，真的好吵啊。分你一只耳机，一起听着安静的音乐学习吧。",
+      "endLine": "你刚才看书的时候，脑袋一直跟着节奏在晃哦。……扑哧，干嘛突然把眼神移开呀？其实我也跟着晃了，那首曲子真的很好听。",
+      "unlockText": "因为中间隔着空座位，耳机线拉得很紧。她之前写了张纸条推过来：“笨蛋，你坐过来一个座位，线不够长啦。”当你挪过去坐到她身边，她收回耳机线的时候，指尖不小心碰到了你的耳廓。你看到她慌忙转过头去把长发挽到耳后，露出的侧脸和耳朵，红得比外面的晚霞还要好看。她的播放列表名字叫：《适合两个人安静的时候》。"
+    },
+    {
+      "episodeId": "suisui_ep_008",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 8,
+      "title": "便签里的心意",
+      "visual": {
+        "startBackgroundId": "bg_study_room_evening",
+        "startSpriteId": "suisui_quiet",
+        "endBackgroundId": "bg_study_room_evening",
+        "endSpriteId": "suisui_shy",
+        "unlockBackgroundId": "bg_study_room_evening",
+        "unlockSpriteId": "suisui_shy"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep008_start",
+        "endVoiceId": "voice_ep008_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天我在你桌上放了一张便签，但你要学完才能看。这是规矩。",
+      "endLine": "看完了吗？你……不用现在回答我。",
+      "unlockText": "你深呼吸打开那张被她压在笔袋下的便签，上面写着：“我好像开始期待每天来自习了。原因你应该知道。”你转头看她，她正拼命低头盯着书本，连呼吸都变轻了。其实，有些答案不用说出口，自习室里加速的心跳声已经替你回答了。"
+    },
+    {
+      "episodeId": "suisui_ep_009",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 9,
+      "title": "距离刚刚好",
+      "visual": {
+        "startBackgroundId": "bg_study_room_day",
+        "startSpriteId": "suisui_smile",
+        "endBackgroundId": "bg_study_room_evening",
+        "endSpriteId": "suisui_quiet",
+        "unlockBackgroundId": "bg_study_room_evening",
+        "unlockSpriteId": "suisui_shy"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep009_start",
+        "endVoiceId": "voice_ep009_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "今天不用我提醒，你自己就坐过来了呀。那……今天也请多指教，同桌。",
+      "endLine": "你有没有觉得，这个距离刚刚好？",
+      "unlockText": "写字时，你们的手肘偶尔会轻轻碰到。她没有躲开，你也没有。这时候，桌面上不再是她单向给你传纸条，而是并排放着两张——一张她的，一张你刚刚写完推过去的，两张纸条的边缘在桌面上贴在一起，像极了此刻并肩的你们。"
+    },
+    {
+      "episodeId": "suisui_ep_010",
+      "characterId": "suisui_001",
+      "requiredPomodoros": 10,
+      "title": "最后一张便签",
+      "visual": {
+        "startBackgroundId": "bg_study_room_evening",
+        "startSpriteId": "suisui_serious",
+        "endBackgroundId": "bg_study_room_evening",
+        "endSpriteId": "suisui_smile",
+        "unlockBackgroundId": "bg_study_room_evening",
+        "unlockSpriteId": "suisui_shy"
+      },
+      "audio": {
+        "startVoiceId": "voice_ep010_start",
+        "endVoiceId": "voice_ep010_end",
+        "bgmId": "bgm_cafe"
+      },
+      "startLine": "这是我们认识的第十次自习。我准备了一个东西，但你要先完成今天的任务。",
+      "endLine": "给你。这十天的‘监督费’。",
+      "unlockText": "她递过来一本小小的手账本，里面贴满了这十天里你们互相传的所有便签，全部按日期工整排好。最后一页只有一行秀气的字：“从明天起，这本本子我们一起写。”封底的夹层里落出一张照片，是她那天假装竖起书看书时，偷偷拍下的你低头认真学习的侧脸。你抬头，她正抓着书包带子，亮晶晶的眼睛一眨不眨地看着你，等待着属于你们明天的开始。"
     }
   ]
 }

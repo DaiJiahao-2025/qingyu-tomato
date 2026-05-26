@@ -13,11 +13,27 @@ const musicCatalog = [
 const characters = [
   {
     characterId: "suisui_001",
-    characterName: "岁岁",
+    characterName: "\u5c81\u5c81",
     roleType: "senpai",
-    style: "校园陪伴, 轻恋爱",
-    portrait: "./public/images/characters/suisui/岁岁.webp",
+    style: "\u6821\u56ed\u966a\u4f34 / \u81ea\u4e60\u540c\u684c",
+    portrait: "./public/images/characters/suisui/\u5c81\u5c81.webp",
     isAvailable: true,
+    galleryStatus: "\u5f53\u524d\u5f00\u653e",
+    description: "\u6e29\u67d4\u3001\u53ef\u7231\u3001\u806a\u660e\uff0c\u966a\u4f60\u5b8c\u6210\u81ea\u4e60\u7ea6\u5b9a\u3002",
+    voiceSampleEpisodeId: "suisui_ep_001",
+  },
+  {
+    characterId: "yaya_001",
+    characterName: "\u5a05\u5a05",
+    roleType: "classmate",
+    style: "\u65b0\u89d2\u8272 / \u5f85\u5f00\u653e\u5267\u60c5",
+    portrait: "./public/images/characters/yaya/\u5a05\u5a05.webp",
+    isAvailable: true,
+    galleryStatus: "\u65b0\u89d2\u8272",
+    description: "\u65b0\u52a0\u5165\u7684\u89d2\u8272\uff0c\u5148\u5728\u753b\u5eca\u9732\u9762\uff1b\u5267\u60c5\u548c\u8bed\u97f3\u4f1a\u5728\u540e\u7eed\u8865\u4e0a\u3002",
+    voiceSampleEpisodeId: null,
+    voiceSampleSrc: "./public/audio/voice/yaya/start-001.wav",
+    voiceSampleLine: "\u5a05\u5a05\u5728\u8fd9\u91cc\uff0c\u966a\u4f60\u4e00\u8d77\u5f00\u59cb\u4eca\u5929\u7684\u4e13\u6ce8\u3002",
   },
 ];
 
@@ -47,8 +63,11 @@ const defaultState = {
       completedPomodoros: 0,
       storyProgress: 0,
       unlockedEpisodeIds: [],
-      pendingChoiceEpisodeId: null,
-      choiceRecords: [],
+    },
+    yaya_001: {
+      completedPomodoros: 0,
+      storyProgress: 0,
+      unlockedEpisodeIds: [],
     },
   },
   gallery: [],
@@ -61,7 +80,6 @@ const defaultState = {
 
 let state = loadState();
 let timerTick = null;
-let queuedStart = null;
 let audioEngine = null;
 let musicAudio = null;
 let voiceAudio = null;
@@ -93,23 +111,28 @@ const elements = {
   timeRemaining: $("#timeRemaining"),
   timerStateLabel: $("#timerStateLabel"),
   activeTask: $("#activeTask"),
+  breakStoryPanel: $("#breakStoryPanel"),
+  breakStoryTitle: $("#breakStoryTitle"),
+  breakStoryText: $("#breakStoryText"),
   pauseResumeButton: $("#pauseResumeButton"),
   exitButton: $("#exitButton"),
   skipBreakButton: $("#skipBreakButton"),
+  continueNextButton: $("#continueNextButton"),
+  finishSessionButton: $("#finishSessionButton"),
   focusLine: $("#focusLine"),
   unlockRibbon: $("#unlockRibbon"),
   unlockedTitle: $("#unlockedTitle"),
   galleryGrid: $("#galleryGrid"),
-  characterProgressBar: $("#characterProgressBar"),
+  characterCardRow: $("#characterCardRow"),
+  galleryCharacterKicker: $("#galleryCharacterKicker"),
+  galleryCharacterName: $("#galleryCharacterName"),
+  voicePreviewButton: $("#voicePreviewButton"),
   defaultFocusInput: $("#defaultFocusInput"),
   breakMinutesInput: $("#breakMinutesInput"),
   voiceVolumeInput: $("#voiceVolumeInput"),
   musicVolumeInput: $("#musicVolumeInput"),
   taskHistory: $("#taskHistory"),
   clearDataButton: $("#clearDataButton"),
-  choiceModal: $("#choiceModal"),
-  choicePrompt: $("#choicePrompt"),
-  choiceOptions: $("#choiceOptions"),
   toast: $("#toast"),
   timerOrbit: $("#timerOrbit"),
   characterImages: $$("[data-character-image]"),
@@ -144,7 +167,26 @@ async function loadStoryEpisodes() {
     throw new Error("Story data must contain an episodes array.");
   }
 
-  return storyData.episodes;
+  return hydrateEpisodeVoiceSources(storyData);
+}
+
+function hydrateEpisodeVoiceSources(storyData) {
+  const voices = storyData.assets?.voices || [];
+  const voiceSourceById = new Map(
+    voices.map((voice) => [voice.voiceId, normalizePublicAssetPath(voice.src)]),
+  );
+
+  return storyData.episodes.map((episode) => ({
+    ...episode,
+    startVoice: episode.startVoice || voiceSourceById.get(episode.audio?.startVoiceId) || null,
+    endVoice: episode.endVoice || voiceSourceById.get(episode.audio?.endVoiceId) || null,
+  }));
+}
+
+function normalizePublicAssetPath(source) {
+  if (!source || /^https?:\/\//.test(source) || source.startsWith("./")) return source;
+  if (source.startsWith("/")) return `./public${source}`;
+  return source;
 }
 
 function loadState() {
@@ -240,6 +282,13 @@ function bindEvents() {
   elements.pauseResumeButton.addEventListener("click", togglePause);
   elements.exitButton.addEventListener("click", exitCurrentTimer);
   elements.skipBreakButton.addEventListener("click", skipBreak);
+  elements.continueNextButton.addEventListener("click", continueNextPomodoro);
+  elements.finishSessionButton.addEventListener("click", finishCompletedSession);
+  elements.characterCardRow.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-character-gallery]");
+    if (button) selectCharacterGallery(button.dataset.characterGallery);
+  });
+  elements.voicePreviewButton.addEventListener("click", previewCurrentCharacterVoice);
 
   elements.mutedToggle.addEventListener("change", () => {
     state.settings.muted = elements.mutedToggle.checked;
@@ -298,7 +347,7 @@ function bindEvents() {
 function hydrateForm() {
   elements.focusMinutesInput.value = state.timerState.focusMinutes || state.settings.defaultFocusMinutes;
   elements.modalBreakMinutesInput.value = state.settings.breakMinutes;
-  elements.characterSelect.value = state.currentCharacterId;
+  elements.characterSelect.value = getPomodoroCharacterId();
   elements.musicSelect.value = state.settings.musicId;
   elements.mutedToggle.checked = state.settings.muted;
   elements.defaultFocusInput.value = state.settings.defaultFocusMinutes;
@@ -313,6 +362,15 @@ function showView(viewName) {
   $$(".nav-button").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.viewTarget === viewName);
   });
+}
+
+function selectCharacterGallery(characterId) {
+  if (!characters.some((character) => character.characterId === characterId && character.isAvailable)) return;
+  state.currentCharacterId = characterId;
+  saveState();
+  renderCharacterImages();
+  render();
+  showView("gallery");
 }
 
 function openStartModal() {
@@ -335,24 +393,15 @@ function requestStartFromForm(forceFocusView = false) {
     return;
   }
 
-  state.currentCharacterId = elements.characterSelect.value || state.currentCharacterId;
+  state.currentCharacterId = elements.characterSelect.value || getPomodoroCharacterId();
   state.settings.breakMinutes = Math.max(1, Number(elements.modalBreakMinutesInput.value) || state.settings.breakMinutes);
   elements.breakMinutesInput.value = state.settings.breakMinutes;
   saveState();
 
-  const characterProgress = getCurrentProgress();
-  const pendingEpisode = getEpisode(characterProgress.pendingChoiceEpisodeId);
   const payload = {
     taskText: elements.taskInput.value.trim().slice(0, 15),
     focusMinutes,
   };
-
-  if (pendingEpisode) {
-    queuedStart = payload;
-    closeStartModal();
-    openChoiceModal(pendingEpisode);
-    return;
-  }
 
   startTimer(payload);
   if (forceFocusView) showView("home");
@@ -414,11 +463,38 @@ function exitCurrentTimer() {
 
 function skipBreak() {
   if (state.timerState.status !== "break") return;
-  state.timerState = { ...defaultState.timerState, focusMinutes: state.settings.defaultFocusMinutes };
+  state.timerState = {
+    ...defaultState.timerState,
+    status: "completed",
+    taskText: state.timerState.taskText,
+    focusMinutes: state.timerState.focusMinutes,
+    startTime: Date.now(),
+    endTime: Date.now(),
+    episodeId: state.timerState.episodeId,
+  };
   sessionStorage.removeItem(SESSION_TIMER_KEY);
   saveState();
   render();
-  toast("已跳过休息。开始下一轮前会先处理剧情选项。");
+  toast("休息已结束，可以选择继续下一轮或退出。");
+}
+
+function continueNextPomodoro() {
+  if (state.timerState.status !== "completed") return;
+  const payload = {
+    taskText: state.timerState.taskText || "",
+    focusMinutes: state.timerState.focusMinutes || state.settings.defaultFocusMinutes,
+  };
+  startTimer(payload);
+}
+
+function finishCompletedSession() {
+  if (state.timerState.status !== "completed") return;
+  state.timerState = { ...defaultState.timerState, focusMinutes: state.settings.defaultFocusMinutes };
+  sessionStorage.removeItem(SESSION_TIMER_KEY);
+  stopMusic();
+  saveState();
+  render();
+  showView("home");
 }
 
 function completePomodoro() {
@@ -443,9 +519,6 @@ function completePomodoro() {
       unlockedAt: new Date(now).toISOString(),
       taskText: timer.taskText,
     });
-    if (episode.choices?.length) {
-      progress.pendingChoiceEpisodeId = episode.episodeId;
-    }
   }
 
   if (timer.taskText) {
@@ -459,11 +532,11 @@ function completePomodoro() {
 
   state.timerState = {
     ...defaultState.timerState,
-    status: "break",
+    status: "story",
     taskText: timer.taskText,
     focusMinutes: timer.focusMinutes,
     startTime: now,
-    endTime: now + state.settings.breakMinutes * 60 * 1000,
+    endTime: now,
     episodeId: episode?.episodeId || null,
   };
 
@@ -473,56 +546,41 @@ function completePomodoro() {
   saveState();
   renderUnlock(episode);
   render();
+
+  startBreakAfterStory();
 }
 
 function finishBreak() {
   if (state.timerState.status !== "break") return;
-  state.timerState = { ...defaultState.timerState, focusMinutes: state.settings.defaultFocusMinutes };
+  state.timerState = {
+    ...defaultState.timerState,
+    status: "completed",
+    taskText: state.timerState.taskText,
+    focusMinutes: state.timerState.focusMinutes,
+    startTime: Date.now(),
+    endTime: Date.now(),
+    episodeId: state.timerState.episodeId,
+  };
   sessionStorage.removeItem(SESSION_TIMER_KEY);
   saveState();
   render();
-  toast("休息结束，可以准备下一轮。");
+  toast("休息结束，可以选择继续下一轮或退出。");
 }
 
-function openChoiceModal(episode) {
-  elements.choicePrompt.textContent = episode.unlockText;
-  elements.choiceOptions.innerHTML = episode.choices
-    .map((choice) => `<button type="button" data-choice-id="${choice.choiceId}">${choice.text}</button>`)
-    .join("");
-  elements.choiceModal.hidden = false;
-  elements.choiceOptions.querySelectorAll("button").forEach((button) => {
-    button.addEventListener("click", () => chooseStoryOption(episode, button.dataset.choiceId));
-  });
-}
-
-function chooseStoryOption(episode, choiceId) {
-  const choice = episode.choices.find((item) => item.choiceId === choiceId);
-  const progress = getCurrentProgress();
-  progress.choiceRecords.push({
-    episodeId: episode.episodeId,
-    choiceId,
-    choiceText: choice.text,
-    reply: choice.reply,
-    chosenAt: new Date().toISOString(),
-  });
-  progress.pendingChoiceEpisodeId = null;
-
-  const galleryItem = state.gallery.find((item) => item.episodeId === episode.episodeId);
-  if (galleryItem) {
-    galleryItem.choiceText = choice.text;
-    galleryItem.choiceReply = choice.reply;
-  }
-
-  elements.choiceModal.hidden = true;
+function startBreakAfterStory() {
+  const now = Date.now();
+  state.timerState = {
+    ...defaultState.timerState,
+    status: "break",
+    taskText: state.timerState.taskText,
+    focusMinutes: state.timerState.focusMinutes,
+    startTime: now,
+    endTime: now + state.settings.breakMinutes * 60 * 1000,
+    episodeId: state.timerState.episodeId,
+  };
+  sessionStorage.setItem(SESSION_TIMER_KEY, "1");
   saveState();
   render();
-  toast(choice.reply);
-
-  if (queuedStart) {
-    const payload = queuedStart;
-    queuedStart = null;
-    startTimer(payload);
-  }
 }
 
 function render() {
@@ -535,11 +593,14 @@ function render() {
     timer.status === "break"
       ? state.settings.breakMinutes * 60 * 1000
       : Math.max(1, (timer.focusMinutes || state.settings.defaultFocusMinutes) * 60 * 1000);
-  const progressPct = ["focusing", "paused", "break"].includes(timer.status)
-    ? Math.min(100, Math.max(0, ((initialMs - remaining) / initialMs) * 100))
-    : 0;
+  const progressPct =
+    timer.status === "completed"
+      ? 100
+      : ["focusing", "paused", "break"].includes(timer.status)
+        ? Math.min(100, Math.max(0, ((initialMs - remaining) / initialMs) * 100))
+        : 0;
 
-  const timerIsActive = ["focusing", "paused", "break"].includes(timer.status);
+  const timerIsActive = ["focusing", "paused", "break", "story", "completed"].includes(timer.status);
   elements.homeEmptyState.hidden = timerIsActive;
   elements.immersiveTimer.hidden = !timerIsActive;
   if (elements.completedCount) elements.completedCount.textContent = progress.completedPomodoros;
@@ -550,6 +611,15 @@ function render() {
   elements.railTodayCount.textContent = state.today.completed;
   elements.currentLine.textContent = getCurrentLine();
   elements.focusLine.textContent = getCurrentLine();
+  const breakStory = getCurrentBreakStory();
+  elements.breakStoryPanel.hidden = !breakStory;
+  if (breakStory) {
+    elements.breakStoryTitle.textContent = breakStory.title;
+    elements.breakStoryText.textContent = breakStory.unlockText;
+  } else {
+    elements.breakStoryTitle.textContent = "";
+    elements.breakStoryText.textContent = "";
+  }
   elements.timeRemaining.textContent = formatTime(remaining);
   elements.timerStateLabel.textContent = getStatusLabel(timer.status);
   elements.activeTask.textContent = timer.taskText || elements.taskInput.value.trim() || "还没有本轮任务";
@@ -557,26 +627,96 @@ function render() {
   elements.pauseResumeButton.hidden = !["focusing", "paused"].includes(timer.status);
   elements.exitButton.hidden = !["focusing", "paused"].includes(timer.status);
   elements.skipBreakButton.hidden = timer.status !== "break";
-  elements.focusStartButton.hidden = !["idle", "completed"].includes(timer.status);
+  elements.continueNextButton.hidden = timer.status !== "completed";
+  elements.finishSessionButton.hidden = timer.status !== "completed";
+  elements.focusStartButton.hidden = timer.status !== "idle";
   elements.timerOrbit.style.setProperty("--timer-progress", `${progressPct}%`);
-  elements.characterProgressBar.style.width = `${episodeCount ? Math.min(100, (progress.storyProgress / episodeCount) * 100) : 0}%`;
 
   elements.mutedToggle.checked = state.settings.muted;
   elements.modalBreakMinutesInput.value = state.settings.breakMinutes;
-  elements.characterSelect.value = state.currentCharacterId;
+  elements.characterSelect.value = getPomodoroCharacterId();
   elements.musicSelect.value = state.settings.musicId;
   elements.defaultFocusInput.value = state.settings.defaultFocusMinutes;
   elements.breakMinutesInput.value = state.settings.breakMinutes;
   elements.voiceVolumeInput.value = state.settings.voiceVolume;
   elements.musicVolumeInput.value = state.settings.musicVolume;
 
+  renderCharacterCards();
+  renderGalleryHeader();
   renderGallery();
   renderHistory();
 }
 
+function renderCharacterCards() {
+  const selectedId = state.currentCharacterId;
+  elements.characterCardRow.innerHTML = characters
+    .map((character) => {
+      const progress = getProgressForCharacter(character.characterId);
+      const characterEpisodes = getEpisodesForCharacter(character.characterId);
+      const total = characterEpisodes.length;
+      const unlocked = Math.min(progress.storyProgress, total);
+      const progressPct = total ? Math.min(100, (unlocked / total) * 100) : 0;
+      const isSelected = character.characterId === selectedId;
+      const progressLabel = total ? `${unlocked} / ${total} 段回忆` : "剧情准备中";
+
+      return `
+        <button
+          class="skill-character-card ${isSelected ? "is-selected" : ""}"
+          data-character-gallery="${character.characterId}"
+          type="button"
+          aria-current="${isSelected ? "true" : "false"}"
+        >
+          <span class="skill-card-status">${escapeHtml(character.galleryStatus)}</span>
+          <span class="skill-card-portrait">
+            <img src="${escapeHtml(character.portrait)}" alt="${escapeHtml(character.characterName)}立绘" />
+          </span>
+          <span class="skill-card-body">
+            <span class="skill-card-type">${escapeHtml(character.style)}</span>
+            <strong>${escapeHtml(character.characterName)}</strong>
+            <span>${escapeHtml(character.description)}</span>
+          </span>
+          <span class="skill-card-progress" aria-label="${escapeHtml(progressLabel)}">
+            <span style="width: ${progressPct}%"></span>
+          </span>
+          <span class="skill-card-foot">
+            <span>${escapeHtml(progressLabel)}</span>
+            <span>进入画廊</span>
+          </span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function renderGalleryHeader() {
+  const character = getCurrentCharacter();
+  const progress = getCurrentProgress();
+  const episodeCount = getCurrentCharacterEpisodes().length;
+  const unlocked = Math.min(progress.storyProgress, episodeCount);
+  const voiceEpisode = getCurrentCharacterVoiceEpisode();
+
+  elements.galleryCharacterKicker.textContent = episodeCount ? `${unlocked} / ${episodeCount} 段回忆` : "角色剧情准备中";
+  elements.galleryCharacterName.textContent = `${character.characterName}的画廊`;
+  elements.voicePreviewButton.textContent = voiceEpisode ? `试听${character.characterName}语音` : "语音准备中";
+  elements.voicePreviewButton.disabled = !voiceEpisode;
+}
+
 function renderGallery() {
   const galleryByEpisode = new Map(state.gallery.map((item) => [item.episodeId, item]));
-  elements.galleryGrid.innerHTML = getCurrentCharacterEpisodes()
+  const character = getCurrentCharacter();
+  const characterEpisodes = getCurrentCharacterEpisodes();
+
+  if (!characterEpisodes.length) {
+    elements.galleryGrid.innerHTML = `
+      <article class="gallery-empty">
+        <h2>${escapeHtml(character.characterName)}的剧情还在准备中</h2>
+        <p>角色已经加入画廊。等剧情和语音资源补上后，这里会显示她的专属回忆。</p>
+      </article>
+    `;
+    return;
+  }
+
+  elements.galleryGrid.innerHTML = characterEpisodes
     .map((episode, index) => {
       const item = galleryByEpisode.get(episode.episodeId);
       if (!item) {
@@ -592,9 +732,6 @@ function renderGallery() {
           </article>
         `;
       }
-      const choiceMarkup = item.choiceText
-        ? `<p><strong>你的选择：</strong>${escapeHtml(item.choiceText)}</p><p><strong>岁岁：</strong>${escapeHtml(item.choiceReply)}</p>`
-        : "";
       return `
         <article class="gallery-card gallery-card-unlocked">
           <div class="gallery-card-topline">
@@ -604,7 +741,6 @@ function renderGallery() {
           <h2>${escapeHtml(item.title)}</h2>
           <p>${escapeHtml(item.unlockText)}</p>
           ${item.taskText ? `<p><strong>本轮任务：</strong>${escapeHtml(item.taskText)}</p>` : ""}
-          ${choiceMarkup}
           <button class="soft-action" type="button" data-replay="${item.episodeId}">回放文字语音</button>
         </article>
       `;
@@ -658,6 +794,7 @@ function getRemainingMs() {
   const timer = state.timerState;
   if (timer.status === "paused") return Math.max(0, timer.remainingAtPauseMs || 0);
   if (["focusing", "break"].includes(timer.status)) return Math.max(0, timer.endTime - Date.now());
+  if (["story", "completed"].includes(timer.status)) return 0;
   return (timer.focusMinutes || state.settings.defaultFocusMinutes) * 60 * 1000;
 }
 
@@ -668,13 +805,23 @@ function getStatusLabel(status) {
     paused: "已暂停",
     break: "休息中",
     completed: "已完成",
-    pendingChoice: "等待选择",
     story: "剧情中",
   }[status] || "等待开始";
 }
 
 function getCurrentProgress() {
-  return state.characters[state.currentCharacterId];
+  return getProgressForCharacter(state.currentCharacterId);
+}
+
+function getProgressForCharacter(characterId) {
+  if (!state.characters[characterId]) {
+    state.characters[characterId] = {
+      completedPomodoros: 0,
+      storyProgress: 0,
+      unlockedEpisodeIds: [],
+    };
+  }
+  return state.characters[characterId];
 }
 
 function getCurrentCharacter() {
@@ -682,7 +829,11 @@ function getCurrentCharacter() {
 }
 
 function getCurrentCharacterEpisodes() {
-  return episodes.filter((episode) => episode.characterId === state.currentCharacterId);
+  return getEpisodesForCharacter(state.currentCharacterId);
+}
+
+function getEpisodesForCharacter(characterId) {
+  return episodes.filter((episode) => episode.characterId === characterId);
 }
 
 function getNextEpisode() {
@@ -697,14 +848,58 @@ function getEpisode(episodeId) {
   return episodes.find((episode) => episode.episodeId === episodeId);
 }
 
+function getPomodoroCharacterId() {
+  const options = [...elements.characterSelect.options].map((option) => option.value);
+  if (options.includes(state.currentCharacterId)) return state.currentCharacterId;
+  return options[0] || characters[0].characterId;
+}
+
+function getCurrentCharacterVoiceEpisode() {
+  const character = getCurrentCharacter();
+  const sampleEpisode = character.voiceSampleEpisodeId ? getEpisode(character.voiceSampleEpisodeId) : null;
+  if (sampleEpisode?.startVoice || sampleEpisode?.endVoice) return sampleEpisode;
+  if (character.voiceSampleSrc) {
+    return {
+      startVoice: character.voiceSampleSrc,
+      startLine: character.voiceSampleLine || `${character.characterName}\u5728\u8fd9\u91cc\u3002`,
+    };
+  }
+  return getCurrentCharacterEpisodes().find((episode) => episode.startVoice || episode.endVoice) || null;
+}
+
+function previewCurrentCharacterVoice() {
+  const episode = getCurrentCharacterVoiceEpisode();
+  const character = getCurrentCharacter();
+  if (!episode) {
+    toast(`${character.characterName}的语音还在准备中。`);
+    return;
+  }
+  playLine(episode.startLine || episode.endLine || `${character.characterName}在这里。`, "start", episode);
+}
+
+function getCurrentBreakStory() {
+  if (state.timerState.status !== "break" || !state.timerState.episodeId) return null;
+  const galleryItem = state.gallery.find((item) => item.episodeId === state.timerState.episodeId);
+  if (galleryItem?.unlockText) {
+    return {
+      title: galleryItem.title,
+      unlockText: galleryItem.unlockText,
+    };
+  }
+  const episode = getEpisode(state.timerState.episodeId);
+  if (!episode?.unlockText) return null;
+  return {
+    title: episode.title,
+    unlockText: episode.unlockText,
+  };
+}
+
 function getCurrentLine() {
   const timer = state.timerState;
   const episode = getEpisode(timer.episodeId) || getNextEpisode();
   if (timer.status === "focusing") return episode?.startLine || "我在这里，陪你完成这一轮。";
   if (timer.status === "paused") return "暂停一下也没关系。回来时，我们从这里继续。";
   if (timer.status === "break") return episode?.endLine || "先休息一下，眼睛也需要被照顾。";
-  const pending = getEpisode(getCurrentProgress().pendingChoiceEpisodeId);
-  if (pending) return "开始下一轮前，岁岁有一个小问题想问你。";
   return getNextEpisode()?.startLine || "你已经完成了当前的 v1 剧情，新的故事以后再来。";
 }
 

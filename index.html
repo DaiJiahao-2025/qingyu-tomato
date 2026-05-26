@@ -24,7 +24,6 @@
     <div class="app-shell">
       <aside class="side-rail" aria-label="主要导航">
         <div class="brand-lockup" aria-label="番茄轻语">
-          <span class="brand-mark">番</span>
           <div>
             <strong>番茄轻语</strong>
             <small>Pomodoro Whisper</small>
@@ -33,9 +32,6 @@
         <nav class="nav-tabs">
           <button class="nav-button is-active" data-view-target="home" type="button">
             <span>⌂</span> 首页
-          </button>
-          <button class="nav-button" data-view-target="characters" type="button">
-            <span>♧</span> 角色
           </button>
           <button class="nav-button" data-view-target="gallery" type="button">
             <span>□</span> 画廊
@@ -77,12 +73,19 @@
                     <small id="activeTask">还没有本轮任务</small>
                   </div>
                 </div>
+                <article class="break-story-panel" id="breakStoryPanel" aria-labelledby="breakStoryTitle" hidden>
+                  <p>新剧情已解锁</p>
+                  <h2 id="breakStoryTitle"></h2>
+                  <div id="breakStoryText"></div>
+                </article>
                 <p class="home-line" id="currentLine">这 25 分钟我也会看书，我们一起开始吧。</p>
                 <span id="focusLine" hidden>先写下一件小事，我们再一起开始。</span>
                 <div class="timer-controls">
                   <button class="soft-action" id="pauseResumeButton" type="button">暂停</button>
                   <button class="danger-action" id="exitButton" type="button">退出本轮</button>
                   <button class="soft-action" id="skipBreakButton" type="button">跳过休息</button>
+                  <button class="primary-action" id="continueNextButton" type="button" hidden>继续下一轮</button>
+                  <button class="danger-action" id="finishSessionButton" type="button" hidden>退出</button>
                 </div>
                 <div class="story-ribbon" id="unlockRibbon" hidden>
                   <span>新剧情已解锁</span>
@@ -94,46 +97,24 @@
           </div>
         </section>
 
-        <section class="view" data-view="characters">
-          <div class="page-title">
-            <p>角色选择</p>
-            <h1>先从岁岁开始</h1>
-          </div>
-          <div class="character-grid">
-            <article class="character-card is-current">
-              <div class="character-card-portrait">
-                <img class="character-image small" data-character-image alt="岁岁立绘" />
-                <div class="portrait-figure small" aria-hidden="true">
-                  <span class="hair"></span>
-                  <span class="face"></span>
-                  <span class="collar"></span>
-                  <span class="book"></span>
-                </div>
-              </div>
-              <div>
-                <p class="eyebrow">当前开放</p>
-                <h2>岁岁</h2>
-                <p>温柔、可爱、聪明，声音很好听。她会用克制的方式陪你完成自习约定。</p>
-                <div class="progress-strip">
-                  <span id="characterProgressBar"></span>
-                </div>
-              </div>
-            </article>
-            <article class="character-card locked">
-              <div class="locked-mark">?</div>
-              <div>
-                <p class="eyebrow">未来角色</p>
-                <h2>未开放</h2>
-                <p>v1 只开放一个角色，后续可扩展多角色和独立剧情进度。</p>
-              </div>
-            </article>
-          </div>
-        </section>
-
         <section class="view" data-view="gallery">
+          <section class="gallery-chooser" aria-label="&#x9009;&#x62e9;&#x89d2;&#x8272;&#x8fdb;&#x5165;&#x753b;&#x5eca;">
+            <div class="gallery-chooser-heading">
+              <p>&#x89d2;&#x8272;&#x724c;&#x7ec4;</p>
+              <h1>&#x9009;&#x62e9;&#x4e00;&#x5f20;&#x89d2;&#x8272;&#x724c;</h1>
+            </div>
+            <div class="skill-card-row" id="characterCardRow" aria-label="&#x89d2;&#x8272;&#x753b;&#x5eca;"></div>
+          </section>
+          <div class="gallery-character-bar">
+            <div>
+              <p id="galleryCharacterKicker">&#x5f53;&#x524d;&#x89d2;&#x8272;</p>
+              <h2 id="galleryCharacterName">&#x5c81;&#x5c81;</h2>
+            </div>
+            <button class="soft-action" id="voicePreviewButton" type="button">&#x8bd5;&#x542c;&#x89d2;&#x8272;&#x8bed;&#x97f3;</button>
+          </div>
           <div class="page-title">
-            <p>剧情画廊</p>
-            <h1>你已经走过的片段</h1>
+            <p>&#x5267;&#x60c5;&#x753b;&#x5eca;</p>
+            <h1>&#x5df2;&#x89e3;&#x9501;&#x7684;&#x7247;&#x6bb5;</h1>
           </div>
           <div class="gallery-grid" id="galleryGrid"></div>
         </section>
@@ -231,15 +212,6 @@
         <p class="form-error" id="startError" aria-live="polite"></p>
         <button class="primary-action full" id="startButton" type="button">确认开始</button>
       </article>
-    </div>
-
-    <div class="choice-modal" id="choiceModal" hidden>
-      <div class="choice-card" role="dialog" aria-modal="true" aria-labelledby="choiceTitle">
-        <p class="eyebrow">开始下一轮前</p>
-        <h2 id="choiceTitle">岁岁有话想问你</h2>
-        <p id="choicePrompt"></p>
-        <div id="choiceOptions" class="choice-options"></div>
-      </div>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
