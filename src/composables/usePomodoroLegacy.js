@@ -18,6 +18,7 @@ export function mountPomodoroApp() {
       roleType: "senpai",
       style: "\u6821\u56ed\u966a\u4f34 / \u81ea\u4e60\u540c\u684c",
       portrait: "/images/characters/suisui/\u5c81\u5c81.webp",
+      galleryPortrait: "/images/characters/suisui/suisui_display.webp",
       isAvailable: true,
       galleryStatus: "\u5f53\u524d\u5f00\u653e",
       description: "\u6e29\u67d4\u3001\u53ef\u7231\u3001\u806a\u660e\uff0c\u966a\u4f60\u5b8c\u6210\u81ea\u4e60\u7ea6\u5b9a\u3002",
@@ -682,6 +683,7 @@ export function mountPomodoroApp() {
         const unlocked = Math.min(progress.storyProgress, total);
         const progressPct = total ? Math.min(100, (unlocked / total) * 100) : 0;
         const isSelected = character.characterId === selectedId;
+        const galleryPortrait = character.galleryPortrait || character.portrait;
         const progressLabel = total ? `${unlocked} / ${total} 段回忆` : "剧情准备中";
 
         return `
@@ -697,7 +699,7 @@ export function mountPomodoroApp() {
           <span class="skill-card-frame">
             <span class="skill-card-status">${escapeHtml(character.galleryStatus)}</span>
             <span class="skill-card-portrait">
-              <img src="${escapeHtml(character.portrait)}" alt="${escapeHtml(character.characterName)}立绘" />
+              <img src="${escapeHtml(galleryPortrait)}" alt="${escapeHtml(character.characterName)}立绘" />
             </span>
             <span class="skill-card-body">
               <span class="skill-card-type">${escapeHtml(character.style)}</span>
