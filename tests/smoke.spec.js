@@ -18,13 +18,21 @@ test("gallery uses role skill cards and opens role-specific galleries", async ({
   await page.locator('.nav-button[data-view-target="gallery"]').click();
   await expect(page.locator('[data-view="gallery"]')).toHaveClass(/is-visible/);
   await expect(page.locator("#characterCardRow")).toBeVisible();
+  await expect(page.locator("[data-character-gallery]")).toHaveCount(2);
   await expect(page.locator('[data-character-gallery="suisui_001"]')).toBeVisible();
   await expect(page.locator('[data-character-gallery="yaya_001"]')).toBeVisible();
+  await expect(page.locator("#galleryCharacterName")).toBeHidden();
+  await expect(page.locator("#voicePreviewButton")).toBeHidden();
+  await expect(page.locator("#galleryGrid")).toBeHidden();
 
   await page.locator('[data-character-gallery="yaya_001"]').click();
   await expect(page.locator("#galleryCharacterName")).toContainText("\u5a05\u5a05");
   await expect(page.locator("#voicePreviewButton")).toBeEnabled();
   await expect(page.locator(".gallery-empty")).toContainText("\u5a05\u5a05");
+
+  await page.locator("#galleryBackButton").click();
+  await expect(page.locator("#characterCardRow")).toBeVisible();
+  await expect(page.locator("#galleryGrid")).toBeHidden();
 
   await page.locator('[data-character-gallery="suisui_001"]').click();
   await expect(page.locator("#galleryCharacterName")).toContainText("\u5c81\u5c81");

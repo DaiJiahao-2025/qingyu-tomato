@@ -29,3 +29,7 @@ pnpm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Local agent/tooling state
+.agents/
+NUL/

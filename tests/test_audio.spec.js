@@ -47,6 +47,7 @@ test("gallery voice preview plays the selected character sample", async ({ page 
     )
     .toBe(true);
 
+  await page.locator("#galleryBackButton").click();
   await page.locator('[data-character-gallery="yaya_001"]').click();
   await expect(page.locator("#voicePreviewButton")).toBeEnabled();
   await page.locator("#voicePreviewButton").click();

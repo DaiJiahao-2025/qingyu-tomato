@@ -1,10 +1,13 @@
 {
   "name": "fanqeiqingyu",
   "version": "1.0.0",
-  "description": "根据 `PRD.md` 实现的静态网页 MVP。",
-  "main": "app.js",
+  "description": "番茄轻语 Vue 版 MVP",
+  "main": "src/main.js",
   "scripts": {
-    "serve": "python3 -m http.server 5173",
+    "dev": "vite --host 127.0.0.1",
+    "serve": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed"
@@ -13,6 +16,11 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^5.4.20",
+    "vue": "^3.5.16"
+  },
   "devDependencies": {
     "@playwright/test": "^1.60.0"
   }
