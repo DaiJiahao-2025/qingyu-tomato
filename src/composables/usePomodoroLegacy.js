@@ -6,9 +6,9 @@ export function mountPomodoroApp() {
   const STORY_DATA_URL = "/data/stories.json";
 
   const musicCatalog = [
-    { id: "rain_001", name: "雨天", tone: "rain", src: "./public/audio/music/DeepChill.mp3" },
-    { id: "cafe_001", name: "咖啡馆", tone: "cafe", src: "./public/audio/music/cafe_001.mp3" },
-    { id: "fire_001", name: "篝火", tone: "fire", src: "./public/audio/music/fire_001.mp3" },
+    { id: "rain_001", name: "雨天", tone: "rain", src: "/audio/music/DeepChill.mp3" },
+    { id: "cafe_001", name: "咖啡馆", tone: "cafe", src: "/audio/music/cafe_001.mp3" },
+    { id: "fire_001", name: "篝火", tone: "fire", src: "/audio/music/fire_001.mp3" },
   ];
 
   const characters = [
@@ -17,7 +17,7 @@ export function mountPomodoroApp() {
       characterName: "\u5c81\u5c81",
       roleType: "senpai",
       style: "\u6821\u56ed\u966a\u4f34 / \u81ea\u4e60\u540c\u684c",
-      portrait: "./public/images/characters/suisui/\u5c81\u5c81.webp",
+      portrait: "/images/characters/suisui/\u5c81\u5c81.webp",
       isAvailable: true,
       galleryStatus: "\u5f53\u524d\u5f00\u653e",
       description: "\u6e29\u67d4\u3001\u53ef\u7231\u3001\u806a\u660e\uff0c\u966a\u4f60\u5b8c\u6210\u81ea\u4e60\u7ea6\u5b9a\u3002",
@@ -28,12 +28,12 @@ export function mountPomodoroApp() {
       characterName: "\u5a05\u5a05",
       roleType: "classmate",
       style: "\u65b0\u89d2\u8272 / \u5f85\u5f00\u653e\u5267\u60c5",
-      portrait: "./public/images/characters/yaya/\u5a05\u5a05.webp",
+      portrait: "/images/characters/yaya/\u5a05\u5a05.webp",
       isAvailable: true,
       galleryStatus: "\u65b0\u89d2\u8272",
       description: "\u65b0\u52a0\u5165\u7684\u89d2\u8272\uff0c\u5148\u5728\u753b\u5eca\u9732\u9762\uff1b\u5267\u60c5\u548c\u8bed\u97f3\u4f1a\u5728\u540e\u7eed\u8865\u4e0a\u3002",
       voiceSampleEpisodeId: null,
-      voiceSampleSrc: "./public/audio/voice/yaya/start-001.wav",
+      voiceSampleSrc: "/audio/voice/yaya/start-001.wav",
       voiceSampleLine: "\u5a05\u5a05\u5728\u8fd9\u91cc\uff0c\u966a\u4f60\u4e00\u8d77\u5f00\u59cb\u4eca\u5929\u7684\u4e13\u6ce8\u3002",
     },
   ];
@@ -190,7 +190,7 @@ export function mountPomodoroApp() {
 
   function normalizePublicAssetPath(source) {
     if (!source || /^https?:\/\//.test(source) || source.startsWith("./")) return source;
-    if (source.startsWith("/")) return `./public${source}`;
+    if (source.startsWith("/")) return `${source}`;
     return source;
   }
 
