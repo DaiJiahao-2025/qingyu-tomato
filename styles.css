@@ -1099,10 +1099,9 @@ blockquote {
     inset 0 0 0 1px rgba(255, 255, 255, 0.84),
     inset 0 0 0 7px rgba(255, 255, 255, 0.32);
   text-align: left;
-  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform: translateZ(0);
   transform-style: preserve-3d;
   transition:
-    transform 180ms var(--ease-soft),
     box-shadow 180ms var(--ease-soft),
     border-color 180ms var(--ease-soft);
 }
@@ -1127,7 +1126,6 @@ blockquote {
     0 0 0 5px rgba(238, 141, 130, 0.14),
     inset 0 0 0 1px rgba(255, 255, 255, 0.92),
     inset 0 0 0 7px rgba(255, 255, 255, 0.38);
-  transform: translateY(-6px) rotateX(var(--rx)) rotateY(var(--ry));
 }
 
 .skill-character-card.is-selected {
@@ -1146,19 +1144,33 @@ blockquote {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  transition: opacity 180ms var(--ease-soft);
 }
 
 .skill-card-shine {
   background:
-    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.86), transparent 7rem),
-    conic-gradient(from 130deg at var(--mx) var(--my), rgba(238, 141, 130, 0.34), rgba(157, 187, 159, 0.24), rgba(247, 197, 162, 0.34), rgba(255, 255, 255, 0.42), rgba(238, 141, 130, 0.34));
-  mix-blend-mode: color-dodge;
-  opacity: 0.38;
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.86), transparent 6.6rem),
+    conic-gradient(from 130deg at var(--mx) var(--my), rgba(238, 141, 130, 0.44), rgba(157, 187, 159, 0.3), rgba(247, 197, 162, 0.42), rgba(255, 255, 255, 0.55), rgba(238, 141, 130, 0.44));
+  mix-blend-mode: screen;
+  opacity: 0.22;
 }
 
 .skill-card-glare {
-  background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.68), transparent 24%);
-  opacity: 0.48;
+  background:
+    linear-gradient(112deg, transparent 18%, rgba(255, 255, 255, 0.2) 33%, transparent 48%) 0 0 / 190% 100%,
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.72), transparent 25%);
+  mix-blend-mode: soft-light;
+  opacity: 0.24;
+}
+
+.skill-character-card:hover .skill-card-shine,
+.skill-character-card:focus-visible .skill-card-shine {
+  opacity: 0.58;
+}
+
+.skill-character-card:hover .skill-card-glare,
+.skill-character-card:focus-visible .skill-card-glare {
+  opacity: 0.72;
 }
 
 .skill-card-frame {
@@ -1173,6 +1185,20 @@ blockquote {
     linear-gradient(180deg, rgba(255, 253, 250, 0.92), rgba(255, 244, 237, 0.84)),
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.95), transparent 9rem);
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.58);
+  backface-visibility: hidden;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 180ms var(--ease-soft);
+}
+
+.skill-character-card:hover .skill-card-frame,
+.skill-character-card:focus-visible .skill-card-frame {
+  box-shadow:
+    0 16px 34px rgba(87, 58, 49, 0.14),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.68);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
 }
 
 .skill-card-status {
@@ -1215,6 +1241,14 @@ blockquote {
   height: 100%;
   object-fit: contain;
   object-position: center bottom;
+  transform: scale(1);
+  transition: transform 180ms var(--ease-soft);
+  will-change: transform;
+}
+
+.skill-character-card:hover .skill-card-portrait img,
+.skill-character-card:focus-visible .skill-card-portrait img {
+  transform: scale(1.025);
 }
 
 .skill-card-body {
@@ -1894,5 +1928,22 @@ blockquote {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  .skill-character-card,
+  .skill-character-card:hover,
+  .skill-character-card:focus-visible,
+  .skill-card-frame,
+  .skill-character-card:hover .skill-card-frame,
+  .skill-character-card:focus-visible .skill-card-frame,
+  .skill-card-portrait img,
+  .skill-character-card:hover .skill-card-portrait img,
+  .skill-character-card:focus-visible .skill-card-portrait img {
+    transform: none;
+  }
+
+  .skill-card-shine,
+  .skill-card-glare {
+    opacity: 0.18;
   }
 }

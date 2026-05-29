@@ -87,6 +87,7 @@ export function mountPomodoroApp() {
   let voiceAudio = null;
   let episodes = [];
   let galleryMode = "chooser";
+  let characterCardsMarkup = "";
 
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -675,7 +676,7 @@ export function mountPomodoroApp() {
 
   function renderCharacterCards() {
     const selectedId = state.currentCharacterId;
-    elements.characterCardRow.innerHTML = characters
+    const cardsMarkup = characters
       .map((character) => {
         const progress = getProgressForCharacter(character.characterId);
         const characterEpisodes = getEpisodesForCharacter(character.characterId);
@@ -718,6 +719,11 @@ export function mountPomodoroApp() {
       `;
       })
       .join("");
+
+    if (cardsMarkup === characterCardsMarkup) return;
+
+    elements.characterCardRow.innerHTML = cardsMarkup;
+    characterCardsMarkup = cardsMarkup;
   }
 
   function updateCardPointer(event) {
@@ -737,6 +743,17 @@ export function mountPomodoroApp() {
   }
 
   function resetCardPointer(event) {
+    if (event.currentTarget.matches(":hover")) return;
+
+    const rowRect = event.currentTarget.getBoundingClientRect();
+    const isInsideRow =
+      event.clientX >= rowRect.left &&
+      event.clientX <= rowRect.right &&
+      event.clientY >= rowRect.top &&
+      event.clientY <= rowRect.bottom;
+
+    if (isInsideRow) return;
+
     const card = event.target.closest("[data-character-gallery]");
     const cards = card ? [card] : [...event.currentTarget.querySelectorAll("[data-character-gallery]")];
     cards.forEach((item) => {
