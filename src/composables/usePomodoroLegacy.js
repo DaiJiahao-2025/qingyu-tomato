@@ -6,9 +6,9 @@ export function mountPomodoroApp() {
   const STORY_DATA_URL = "/data/stories.json";
 
   const musicCatalog = [
-    { id: "rain_001", name: "雨天", tone: "rain", src: "/audio/music/DeepChill.mp3" },
-    { id: "cafe_001", name: "咖啡馆", tone: "cafe", src: "/audio/music/cafe_001.mp3" },
-    { id: "fire_001", name: "篝火", tone: "fire", src: "/audio/music/fire_001.mp3" },
+    { id: "rain_001", name: "Chill", tone: "rain", src: "/audio/music/DeepChill.mp3" },
+    { id: "cafe_001", name: "雨天", tone: "cafe", src: "/audio/music/Rain.mp3" },
+    { id: "fire_001", name: "森林", tone: "fire", src: "/audio/music/Forest.mp3" },
   ];
 
   const characters = [
