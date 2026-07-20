@@ -17,7 +17,7 @@ test("starting a pomodoro plays the character start voice asset", async ({ page 
   await expect
     .poll(() =>
       page.evaluate(() =>
-        window.__playedAudioSources.some((source) => source.includes("/public/audio/voice/suisui/start-001.wav")),
+        window.__playedAudioSources.some((source) => source.includes("/audio/voice/suisui/start-001.wav")),
       ),
     )
     .toBe(true);
@@ -42,7 +42,7 @@ test("gallery voice preview plays the selected character sample", async ({ page 
   await expect
     .poll(() =>
       page.evaluate(() =>
-        window.__playedAudioSources.some((source) => source.includes("/public/audio/voice/suisui/start-001.wav")),
+        window.__playedAudioSources.some((source) => source.includes("/audio/voice/suisui/start-001.wav")),
       ),
     )
     .toBe(true);
@@ -55,7 +55,7 @@ test("gallery voice preview plays the selected character sample", async ({ page 
   await expect
     .poll(() =>
       page.evaluate(() =>
-        window.__playedAudioSources.some((source) => source.includes("/public/audio/voice/yaya/start-001.wav")),
+        window.__playedAudioSources.some((source) => source.includes("/audio/voice/yaya/start-001.wav")),
       ),
     )
     .toBe(true);
