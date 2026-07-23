@@ -17,6 +17,7 @@
 import { defineAsyncComponent, onMounted } from "vue";
 import { useAppStore } from "@/stores/app";
 import { startTicker } from "@/composables/useTicker";
+import { initSyncEngine } from "@/services/sync";
 import SideRail from "@/components/SideRail.vue";
 import HomeView from "@/components/HomeView.vue";
 import GalleryView from "@/components/GalleryView.vue";
@@ -31,5 +32,6 @@ const SettingsView = defineAsyncComponent(() => import("@/components/SettingsVie
 onMounted(async () => {
   await store.init();
   startTicker();
+  initSyncEngine();
 });
 </script>
