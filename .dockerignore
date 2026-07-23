@@ -1,0 +1,10 @@
+node_modules
+dist
+server
+test-results
+playwright-report
+.git
+.env
+*.md
+docs
+.browsers

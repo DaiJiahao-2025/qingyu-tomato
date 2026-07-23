@@ -1,0 +1,177 @@
+// 番茄轻语数据模型
+//
+// 同步设计约定：
+// - 业务行主键为复合键 (userId, id)：行 id 由客户端离线生成（如 workspace_personal），
+//   不同用户之间会重复，必须以 userId 隔离。
+// - updatedAt：客户端修改时间（LWW 冲突判定用，epoch ms 转 DateTime）。
+// - syncedAt：服务端收到时间（增量拉取游标，只用服务端时钟保证单调）。
+// - 业务日期字段（createdAt/completedAt/startedAt/unlockedAt）按客户端原样存 String，
+//   服务端不做区间查询，保证快照往返无损。
+// - 软删：deletedAt 非空即墓碑，同步时下发 deleted 标记。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workspaces    Workspace[]
+  projects      Project[]
+  tasks         Task[]
+  focusSessions FocusSession[]
+  settings      UserSettings?
+  characters    CharacterProgress[]
+  gallery       GalleryEntry[]
+}
+
+model Workspace {
+  userId    String
+  id        String
+  name      String    @default("")
+  updatedAt DateTime
+  syncedAt  DateTime  @default(now())
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, id])
+  @@index([userId, syncedAt])
+}
+
+model Project {
+  userId      String
+  id          String
+  workspaceId String
+  name        String    @default("")
+  color       String    @default("")
+  createdAt   String    @default("")
+  updatedAt   DateTime
+  syncedAt    DateTime  @default(now())
+  deletedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, id])
+  @@index([userId, syncedAt])
+}
+
+enum TaskStatus {
+  todo
+  doing
+  done
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+model Task {
+  userId             String
+  id                 String
+  workspaceId        String
+  projectId          String?
+  title              String       @default("")
+  description        String       @db.Text
+  status             TaskStatus   @default(todo)
+  priority           TaskPriority @default(medium)
+  estimatedPomodoros Int          @default(1)
+  completedPomodoros Int          @default(0)
+  createdAt          String       @default("")
+  completedAt        String?
+  updatedAt          DateTime
+  syncedAt           DateTime     @default(now())
+  deletedAt          DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, id])
+  @@index([userId, syncedAt])
+  @@index([userId, workspaceId])
+}
+
+enum SessionStatus {
+  completed
+  cancelled
+}
+
+model FocusSession {
+  userId       String
+  id           String
+  workspaceId  String
+  taskId       String?
+  characterId  String
+  taskText     String        @db.Text
+  focusMinutes Int
+  startedAt    String        @default("")
+  completedAt  String        @default("")
+  status       SessionStatus @default(completed)
+  updatedAt    DateTime
+  syncedAt     DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, id])
+  @@index([userId, syncedAt])
+}
+
+model UserSettings {
+  userId              String   @id
+  defaultFocusMinutes Int      @default(25)
+  breakMinutes        Int      @default(5)
+  musicId             String   @default("rain_001")
+  voiceVolume         Float    @default(0.7)
+  musicVolume         Float    @default(0.25)
+  muted               Boolean  @default(false)
+  currentCharacterId  String   @default("suisui_001")
+  currentWorkspaceId  String   @default("workspace_personal")
+  updatedAt           DateTime
+  syncedAt            DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CharacterProgress {
+  userId             String
+  characterId        String
+  completedPomodoros Int      @default(0)
+  storyProgress      Int      @default(0)
+  unlockedEpisodeIds Json
+  updatedAt          DateTime
+  syncedAt           DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, characterId])
+  @@index([userId, syncedAt])
+}
+
+model GalleryEntry {
+  userId        String
+  episodeId     String
+  characterId   String
+  characterName String   @default("")
+  title         String   @default("")
+  unlockText    String   @db.Text
+  unlockedAt    String   @default("")
+  taskText      String   @db.Text
+  updatedAt     DateTime
+  syncedAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, episodeId])
+  @@index([userId, syncedAt])
+}

@@ -20,6 +20,11 @@ import type {
   GalleryMode,
   TimerStartPayload,
   CharacterProgress,
+  Task,
+  Project,
+  Workspace,
+  FocusSession,
+  GalleryEntry,
 } from "@/types";
 import {
   SESSION_TIMER_KEY,
@@ -29,6 +34,12 @@ import {
   loadAppState,
   saveAppState,
 } from "@/services/persistence";
+import {
+  scheduleCloudSync,
+  resetSyncMeta,
+  PENDING_KEY_PREFIX,
+  type ServerPull,
+} from "@/services/sync";
 import { preloadAudioMetadata, preloadImage, scheduleIdlePreload } from "@/composables/usePreload";
 
 // ============================================================
@@ -319,6 +330,7 @@ export const useAppStore = defineStore("app", () => {
       today: { ...today.value },
     };
     saveAppState(snapshot);
+    scheduleCloudSync();
   }
 
   function hydrateFromStorage() {
@@ -335,6 +347,151 @@ export const useAppStore = defineStore("app", () => {
     tasks.value = s.tasks;
     focusSessions.value = s.focusSessions;
     today.value = s.today;
+  }
+
+  /**
+   * 合并云端增量（由同步引擎调用）。
+   * isPending 为真的行表示本地有未推送的改动，本地优先跳过；
+   * 角色进度不走覆盖而是 max/并集，保证进度只增不减。
+   */
+  function applyServerChanges(pull: ServerPull, isPending: (key: string) => boolean) {
+    const P = PENDING_KEY_PREFIX;
+
+    for (const row of pull.tasks) {
+      if (isPending(P.task + row.id)) continue;
+      const idx = tasks.value.findIndex((t) => t.id === row.id);
+      if (row.deleted) {
+        if (idx >= 0) tasks.value.splice(idx, 1);
+        continue;
+      }
+      const next: Task = {
+        id: row.id,
+        workspaceId: row.workspaceId,
+        title: row.title,
+        description: row.description,
+        status: row.status,
+        priority: row.priority,
+        estimatedPomodoros: row.estimatedPomodoros,
+        completedPomodoros: row.completedPomodoros,
+        projectId: row.projectId ?? null,
+        createdAt: row.createdAt,
+        completedAt: row.completedAt ?? null,
+      };
+      if (idx >= 0) tasks.value[idx] = next;
+      else tasks.value.unshift(next);
+    }
+
+    for (const row of pull.projects) {
+      if (isPending(P.project + row.id)) continue;
+      const idx = projects.value.findIndex((p) => p.id === row.id);
+      if (row.deleted) {
+        if (idx >= 0) projects.value.splice(idx, 1);
+        continue;
+      }
+      const next: Project = {
+        id: row.id,
+        workspaceId: row.workspaceId,
+        name: row.name,
+        color: row.color,
+        createdAt: row.createdAt,
+      };
+      if (idx >= 0) projects.value[idx] = next;
+      else projects.value.unshift(next);
+    }
+
+    for (const row of pull.workspaces) {
+      if (isPending(P.workspace + row.id)) continue;
+      const idx = workspaces.value.findIndex((w) => w.id === row.id);
+      if (row.deleted) {
+        if (idx >= 0) workspaces.value.splice(idx, 1);
+        continue;
+      }
+      const next: Workspace = { id: row.id, name: row.name, ownerId: row.ownerId };
+      if (idx >= 0) workspaces.value[idx] = next;
+      else workspaces.value.push(next);
+    }
+    if (!workspaces.value.length) {
+      workspaces.value = [{ id: "workspace_personal", name: "个人工作区", ownerId: "local_user" }];
+    }
+    if (!workspaces.value.some((w) => w.id === currentWorkspaceId.value)) {
+      currentWorkspaceId.value = workspaces.value[0].id;
+    }
+
+    if (pull.focusSessions.length) {
+      const existingIds = new Set(focusSessions.value.map((s) => s.id));
+      for (const row of pull.focusSessions) {
+        if (existingIds.has(row.id)) continue;
+        const next: FocusSession = {
+          id: row.id,
+          workspaceId: row.workspaceId,
+          userId: row.userId,
+          taskId: row.taskId ?? null,
+          characterId: row.characterId,
+          taskText: row.taskText,
+          focusMinutes: row.focusMinutes,
+          startedAt: row.startedAt,
+          completedAt: row.completedAt,
+          status: row.status,
+        };
+        focusSessions.value.push(next);
+        existingIds.add(row.id);
+      }
+      focusSessions.value.sort((a, b) => (a.completedAt < b.completedAt ? 1 : -1));
+    }
+
+    for (const row of pull.characters) {
+      const local = characters.value[row.characterId];
+      if (!local) {
+        characters.value[row.characterId] = {
+          completedPomodoros: row.completedPomodoros,
+          storyProgress: row.storyProgress,
+          unlockedEpisodeIds: [...row.unlockedEpisodeIds],
+        };
+        continue;
+      }
+      local.completedPomodoros = Math.max(local.completedPomodoros, row.completedPomodoros);
+      local.storyProgress = Math.max(local.storyProgress, row.storyProgress);
+      for (const episodeId of row.unlockedEpisodeIds) {
+        if (!local.unlockedEpisodeIds.includes(episodeId)) local.unlockedEpisodeIds.push(episodeId);
+      }
+    }
+
+    if (pull.gallery.length) {
+      const existingEpisodes = new Set(gallery.value.map((g) => g.episodeId));
+      for (const row of pull.gallery) {
+        if (existingEpisodes.has(row.episodeId)) continue;
+        const next: GalleryEntry = {
+          episodeId: row.episodeId,
+          characterId: row.characterId,
+          characterName: row.characterName,
+          title: row.title,
+          unlockText: row.unlockText,
+          unlockedAt: row.unlockedAt,
+          taskText: row.taskText,
+        };
+        gallery.value.push(next);
+        existingEpisodes.add(row.episodeId);
+      }
+      gallery.value.sort((a, b) => (a.unlockedAt < b.unlockedAt ? 1 : -1));
+    }
+
+    if (pull.settings && !isPending(`${P.settings}singleton`)) {
+      const s = pull.settings;
+      settings.value = {
+        defaultFocusMinutes: s.defaultFocusMinutes,
+        breakMinutes: s.breakMinutes,
+        musicId: s.musicId,
+        voiceVolume: s.voiceVolume,
+        musicVolume: s.musicVolume,
+        muted: s.muted,
+      };
+      currentCharacterId.value = s.currentCharacterId;
+      if (workspaces.value.some((w) => w.id === s.currentWorkspaceId)) {
+        currentWorkspaceId.value = s.currentWorkspaceId;
+      }
+    }
+
+    persist();
   }
 
   function resetTodayIfNeeded() {
@@ -652,6 +809,8 @@ export const useAppStore = defineStore("app", () => {
 
   function clearAllData() {
     clearAppState();
+    // 已登录时同步游标一并清零：下次同步将从云端全量拉回（本地清除 ≠ 云端删除）
+    resetSyncMeta();
     hydrateFromStorage();
     toast("本地数据已清除。");
   }
@@ -761,6 +920,7 @@ export const useAppStore = defineStore("app", () => {
     // actions
     persist,
     hydrateFromStorage,
+    applyServerChanges,
     resetTodayIfNeeded,
     restoreActiveTimerIfNeeded,
     loadStoryEpisodes,
