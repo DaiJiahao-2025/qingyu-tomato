@@ -22,10 +22,14 @@ test("creates a task and starts a focus session from it", async ({ page }) => {
   await expect(page.locator(".task-element-table")).toContainText("0 / 3");
 
   await page.mouse.move(0, 0);
-  const primaryColor = await page.getByRole("button", { name: "创建任务" }).evaluate((element) =>
-    getComputedStyle(element).backgroundColor,
-  );
-  expect(primaryColor).toBe("rgb(238, 141, 130)");
+  // 按钮有 background-color transition，轮询等待过渡结束后的最终主题色
+  await expect
+    .poll(async () =>
+      page.getByRole("button", { name: "创建任务" }).evaluate((element) =>
+        getComputedStyle(element).backgroundColor,
+      ),
+    )
+    .toBe("rgb(238, 141, 130)");
 
   await page.getByRole("button", { name: "开始专注：完成 SaaS 任务中心" }).click();
   await expect(page.locator("#startModal")).toBeVisible();
